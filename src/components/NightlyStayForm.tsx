@@ -1,13 +1,15 @@
 import React from 'react';
 import { BedDouble } from 'lucide-react';
-import { ConfigData, NightlyStay } from '../types';
+import { NightlyStay } from '../types';
+import { useConfig } from '../hooks/useConfig';
 
 interface NightlyStayFormProps {
-  config: ConfigData;
   onSubmit: (stay: Omit<NightlyStay, 'id' | 'totalTax' | 'month'>) => void;
 }
 
-export function NightlyStayForm({ config, onSubmit }: NightlyStayFormProps) {
+export function NightlyStayForm({ onSubmit }: NightlyStayFormProps) {
+  const { config } = useConfig();
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);

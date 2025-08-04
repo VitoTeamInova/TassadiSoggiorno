@@ -1,17 +1,16 @@
 import React from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { Edit2, X } from 'lucide-react';
-import { NightlyStay, ConfigData } from '../types';
+import { NightlyStay } from '../types';
 
 interface EditStayModalProps {
   isOpen: boolean;
   onClose: () => void;
   stay: NightlyStay;
-  config: ConfigData;
   onUpdate: (updatedStay: NightlyStay) => void;
 }
 
-export function EditStayModal({ isOpen, onClose, stay, config, onUpdate }: EditStayModalProps) {
+export function EditStayModal({ isOpen, onClose, stay, onUpdate }: EditStayModalProps) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
