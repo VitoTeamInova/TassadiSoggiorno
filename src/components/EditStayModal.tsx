@@ -7,10 +7,11 @@ interface EditStayModalProps {
   isOpen: boolean;
   onClose: () => void;
   stay: NightlyStay;
+  config: any;
   onUpdate: (updatedStay: NightlyStay) => void;
 }
 
-export function EditStayModal({ isOpen, onClose, stay, onUpdate }: EditStayModalProps) {
+export function EditStayModal({ isOpen, onClose, stay, config, onUpdate }: EditStayModalProps) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -29,11 +30,12 @@ export function EditStayModal({ isOpen, onClose, stay, onUpdate }: EditStayModal
       numNights,
       dailyTax,
       month: new Date(formData.get('entryDate') as string).getMonth() + 1,
-      totalTax: (numGuests - numMinors) * numNights * dailyTax
+      totalTax: (numGuests - numMinors) * numNights * dailyTax,
+      preStayNotes: formData.get('preStayNotes') as string || '',
+      postStayNotes: formData.get('postStayNotes') as string || '',
     };
 
     onUpdate(updatedStay);
-    onClose();
   };
 
   return (
@@ -154,6 +156,30 @@ export function EditStayModal({ isOpen, onClose, stay, onUpdate }: EditStayModal
                         defaultValue={stay.numNights}
                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                         required
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-green-700">Pre-Stay Notes</label>
+                      <textarea
+                        name="preStayNotes"
+                        maxLength={1000}
+                        rows={3}
+                        defaultValue={stay.preStayNotes}
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 resize-vertical"
+                        placeholder="Enter any notes before the stay..."
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-blue-700">Post-Stay Notes</label>
+                      <textarea
+                        name="postStayNotes"
+                        maxLength={1000}
+                        rows={3}
+                        defaultValue={stay.postStayNotes}
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 resize-vertical"
+                        placeholder="Enter any notes after the stay..."
                       />
                     </div>
                   </div>

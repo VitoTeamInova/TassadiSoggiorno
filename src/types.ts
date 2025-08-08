@@ -3,6 +3,7 @@ export interface ConfigData {
   year: number;
   month: number;
   defaultDailyTax: number;
+  logoUrl: string;
 }
 
 export interface NightlyStay {
@@ -16,6 +17,8 @@ export interface NightlyStay {
   dailyTax: number;
   month: number;
   totalTax: number;
+  preStayNotes: string;
+  postStayNotes: string;
 }
 
 export interface MonthlyTotal {

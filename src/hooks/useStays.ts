@@ -28,6 +28,8 @@ export function useStays() {
         dailyTax: stay.daily_tax,
         totalTax: stay.total_tax,
         month: stay.month,
+        preStayNotes: stay.pre_stay_notes || '',
+        postStayNotes: stay.post_stay_notes || '',
       }));
 
       setStays(formattedStays);
@@ -53,6 +55,8 @@ export function useStays() {
           daily_tax: stay.dailyTax,
           total_tax: stay.totalTax,
           month: stay.month,
+          pre_stay_notes: stay.preStayNotes || '',
+          post_stay_notes: stay.postStayNotes || '',
         })
         .select()
         .single();
@@ -70,6 +74,8 @@ export function useStays() {
         dailyTax: data.daily_tax,
         totalTax: data.total_tax,
         month: data.month,
+        preStayNotes: data.pre_stay_notes || '',
+        postStayNotes: data.post_stay_notes || '',
       };
 
       setStays(prev => [newStay, ...prev]);
@@ -94,6 +100,8 @@ export function useStays() {
           daily_tax: updatedStay.dailyTax,
           total_tax: updatedStay.totalTax,
           month: updatedStay.month,
+          pre_stay_notes: updatedStay.preStayNotes || '',
+          post_stay_notes: updatedStay.postStayNotes || '',
         })
         .eq('id', updatedStay.id)
         .select()

@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { Settings } from 'lucide-react';
 import { ConfigModal } from './components/ConfigModal';
 import { NightlyStayForm } from './components/NightlyStayForm';
 import { Summary } from './components/Summary';
 import { MonthlyView } from './components/MonthlyView';
 import { EditStayModal } from './components/EditStayModal';
+import { Footer } from './components/Footer';
 import { NightlyStay } from './types';
 import { useStays } from './hooks/useStays';
 import { useConfig } from './hooks/useConfig';
@@ -57,50 +59,74 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        <header className="bg-white rounded-lg shadow-md p-6">
-          <h1 className="text-3xl font-bold text-gray-800 text-center">
-            {config.appName}
-          </h1>
-        </header>
+    <div className="min-h-screen bg-gray-100 flex flex-col">
+      <div className="flex-1 p-6">
+        <div className="max-w-7xl mx-auto space-y-6">
+          <header className="bg-white rounded-lg shadow-md p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                {config.logoUrl && (
+                  <img 
+                    src={config.logoUrl} 
+                    alt="Logo" 
+                    className="h-12 w-auto object-contain"
+                  />
+                )}
+                <h1 className="text-3xl font-bold text-gray-800">
+                  {config.appName}
+                </h1>
+              </div>
+              <button
+                onClick={() => setShowConfig(true)}
+                className="flex items-center gap-2 bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 transition-colors"
+              >
+                <Settings className="w-5 h-5" />
+                Settings
+              </button>
+            </div>
+          </header>
         
-        {showNewStay ? (
-          <NightlyStayForm onSubmit={handleStaySubmit} />
-        ) : selectedMonth ? (
-          <MonthlyView
-            month={selectedMonth}
-            stays={stays}
-            onBack={() => setSelectedMonth(null)}
-            onEditStay={setEditingStay}
-            onNewStay={() => setShowNewStay(true)}
-          />
-        ) : (
-          <Summary 
-            stays={stays} 
-            onNewStay={() => setShowNewStay(true)} 
-            onConfigOpen={() => setShowConfig(true)}
-            onMonthSelect={setSelectedMonth}
-          />
-        )}
+          {showNewStay ? (
+            <NightlyStayForm 
+              onSubmit={handleStaySubmit} 
+              onCancel={() => setShowNewStay(false)}
+              config={config}
+            />
+          ) : selectedMonth ? (
+            <MonthlyView
+              month={selectedMonth}
+              stays={stays}
+              onBack={() => setSelectedMonth(null)}
+              onEditStay={setEditingStay}
+              onNewStay={() => setShowNewStay(true)}
+            />
+          ) : (
+            <Summary 
+              stays={stays} 
+              onNewStay={() => setShowNewStay(true)} 
+              onMonthSelect={setSelectedMonth}
+            />
+          )}
         
-        <ConfigModal
-          isOpen={showConfig}
-          onClose={() => setShowConfig(false)}
-          config={config}
-          onConfigUpdate={handleConfigUpdate}
-        />
-
-        {editingStay && (
-          <EditStayModal
-            isOpen={true}
-            onClose={() => setEditingStay(null)}
-            stay={editingStay}
+          <ConfigModal
+            isOpen={showConfig}
+            onClose={() => setShowConfig(false)}
             config={config}
-            onUpdate={handleStayUpdate}
+            onConfigUpdate={handleConfigUpdate}
           />
-        )}
+
+          {editingStay && (
+            <EditStayModal
+              isOpen={true}
+              onClose={() => setEditingStay(null)}
+              stay={editingStay}
+              config={config}
+              onUpdate={handleStayUpdate}
+            />
+          )}
+        </div>
       </div>
+      <Footer />
     </div>
   );
 }

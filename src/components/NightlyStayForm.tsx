@@ -1,14 +1,15 @@
 import React from 'react';
-import { BedDouble } from 'lucide-react';
+import { BedDouble, X } from 'lucide-react';
 import { NightlyStay } from '../types';
-import { useConfig } from '../hooks/useConfig';
+import { ConfigData } from '../types';
 
 interface NightlyStayFormProps {
   onSubmit: (stay: Omit<NightlyStay, 'id' | 'totalTax' | 'month'>) => void;
+  onCancel: () => void;
+  config: ConfigData;
 }
 
-export function NightlyStayForm({ onSubmit }: NightlyStayFormProps) {
-  const { config } = useConfig();
+export function NightlyStayForm({ onSubmit, onCancel, config }: NightlyStayFormProps) {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -22,6 +23,8 @@ export function NightlyStayForm({ onSubmit }: NightlyStayFormProps) {
       lastName: formData.get('lastName') as string,
       numMinors: parseInt(formData.get('numMinors') as string),
       dailyTax: parseFloat(formData.get('dailyTax') as string),
+      preStayNotes: formData.get('preStayNotes') as string || '',
+      postStayNotes: formData.get('postStayNotes') as string || '',
     };
 
     onSubmit(stay);
@@ -29,19 +32,37 @@ export function NightlyStayForm({ onSubmit }: NightlyStayFormProps) {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <div className="flex items-center gap-2 mb-4">
-        <BedDouble className="w-5 h-5 text-blue-600" />
-        <h2 className="text-xl font-semibold">New Nightly Stay</h2>
+    <div className="bg-gray-100 p-6 rounded-lg shadow-md">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-4">
+          {config.logoUrl && (
+            <img 
+              src={config.logoUrl} 
+              alt="Logo" 
+              className="h-8 w-auto object-contain"
+            />
+          )}
+          <div className="flex items-center gap-2">
+            <BedDouble className="w-5 h-5 text-blue-600" />
+            <h2 className="text-xl font-semibold">New Nightly Stay</h2>
+          </div>
+        </div>
+        <button
+          onClick={onCancel}
+          className="flex items-center gap-2 bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 transition-colors"
+        >
+          <X className="w-5 h-5" />
+          Cancel
+        </button>
       </div>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">Entry Date</label>
             <input
               type="date"
               name="entryDate"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              className="mt-1 block w-full rounded-md border-2 border-gray-400 bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2"
               required
             />
           </div>
@@ -52,7 +73,7 @@ export function NightlyStayForm({ onSubmit }: NightlyStayFormProps) {
               name="dailyTax"
               step="0.01"
               defaultValue={config.defaultDailyTax}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              className="mt-1 block w-full rounded-md border-2 border-gray-400 bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2"
               required
             />
           </div>
@@ -63,7 +84,7 @@ export function NightlyStayForm({ onSubmit }: NightlyStayFormProps) {
             <input
               type="text"
               name="firstName"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              className="mt-1 block w-full rounded-md border-2 border-gray-400 bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2"
               required
             />
           </div>
@@ -72,7 +93,7 @@ export function NightlyStayForm({ onSubmit }: NightlyStayFormProps) {
             <input
               type="text"
               name="lastName"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              className="mt-1 block w-full rounded-md border-2 border-gray-400 bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2"
               required
             />
           </div>
@@ -84,7 +105,7 @@ export function NightlyStayForm({ onSubmit }: NightlyStayFormProps) {
               type="number"
               name="numGuests"
               min="1"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              className="mt-1 block w-full rounded-md border-2 border-gray-400 bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2"
               required
             />
           </div>
@@ -94,7 +115,7 @@ export function NightlyStayForm({ onSubmit }: NightlyStayFormProps) {
               type="number"
               name="numMinors"
               min="0"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              className="mt-1 block w-full rounded-md border-2 border-gray-400 bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2"
               required
             />
           </div>
@@ -104,8 +125,30 @@ export function NightlyStayForm({ onSubmit }: NightlyStayFormProps) {
               type="number"
               name="numNights"
               min="1"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              className="mt-1 block w-full rounded-md border-2 border-gray-400 bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2"
               required
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-green-700">Pre-Stay Notes</label>
+            <textarea
+              name="preStayNotes"
+              maxLength={1000}
+              rows={4}
+              className="mt-1 block w-full rounded-md border-2 border-gray-400 bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2 resize-vertical"
+              placeholder="Enter any notes before the stay..."
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-blue-700">Post-Stay Notes</label>
+            <textarea
+              name="postStayNotes"
+              maxLength={1000}
+              rows={4}
+              className="mt-1 block w-full rounded-md border-2 border-gray-400 bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2 resize-vertical"
+              placeholder="Enter any notes after the stay..."
             />
           </div>
         </div>

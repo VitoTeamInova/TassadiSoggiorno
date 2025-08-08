@@ -1,15 +1,14 @@
 import React from 'react';
-import { PlusCircle, TrendingUp, Settings } from 'lucide-react';
+import { PlusCircle, TrendingUp } from 'lucide-react';
 import { MonthlyTotal, TrimesterTotal, NightlyStay } from '../types';
 
 interface SummaryProps {
   stays: NightlyStay[];
   onNewStay: () => void;
-  onConfigOpen: () => void;
   onMonthSelect: (month: number) => void;
 }
 
-export function Summary({ stays, onNewStay, onConfigOpen, onMonthSelect }: SummaryProps) {
+export function Summary({ stays, onNewStay, onMonthSelect }: SummaryProps) {
   const monthlyTotals: MonthlyTotal[] = Array.from({ length: 12 }, (_, i) => ({
     month: i + 1,
     totalTax: 0,
@@ -59,14 +58,7 @@ export function Summary({ stays, onNewStay, onConfigOpen, onMonthSelect }: Summa
           <TrendingUp className="w-6 h-6 text-blue-600" />
           Summary Report
         </h1>
-        <div className="flex gap-2">
-          <button
-            onClick={onConfigOpen}
-            className="flex items-center gap-2 bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 transition-colors"
-          >
-            <Settings className="w-5 h-5" />
-            Configuration
-          </button>
+        <div>
           <button
             onClick={onNewStay}
             className="flex items-center gap-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"

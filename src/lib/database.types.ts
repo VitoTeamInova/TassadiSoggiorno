@@ -21,6 +21,8 @@ export interface Database {
           daily_tax: number
           total_tax: number
           month: number
+          pre_stay_notes: string
+          post_stay_notes: string
           created_at: string
           updated_at: string
         }
@@ -35,6 +37,8 @@ export interface Database {
           daily_tax: number
           total_tax: number
           month: number
+          pre_stay_notes?: string
+          post_stay_notes?: string
           created_at?: string
           updated_at?: string
         }
@@ -49,6 +53,8 @@ export interface Database {
           daily_tax?: number
           total_tax?: number
           month?: number
+          pre_stay_notes?: string
+          post_stay_notes?: string
           created_at?: string
           updated_at?: string
         }
@@ -60,6 +66,7 @@ export interface Database {
           year: number
           month: number
           default_daily_tax: number
+          logo_url: string
           created_at: string
           updated_at: string
         }
@@ -69,6 +76,7 @@ export interface Database {
           year?: number
           month?: number
           default_daily_tax?: number
+          logo_url?: string
           created_at?: string
           updated_at?: string
         }
@@ -78,6 +86,7 @@ export interface Database {
           year?: number
           month?: number
           default_daily_tax?: number
+          logo_url?: string
           created_at?: string
           updated_at?: string
         }

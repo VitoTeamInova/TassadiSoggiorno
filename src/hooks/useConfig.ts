@@ -8,6 +8,7 @@ export function useConfig() {
     year: new Date().getFullYear(),
     month: new Date().getMonth() + 1,
     defaultDailyTax: 2.0,
+    logoUrl: '',
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -35,6 +36,7 @@ export function useConfig() {
         year: data.year,
         month: data.month,
         defaultDailyTax: data.default_daily_tax,
+        logoUrl: data.logo_url || '',
       });
       setError(null);
     } catch (err) {
@@ -51,6 +53,7 @@ export function useConfig() {
         year: new Date().getFullYear(),
         month: new Date().getMonth() + 1,
         default_daily_tax: 2.0,
+        logo_url: '',
       };
 
       const { data, error } = await supabase
@@ -66,6 +69,7 @@ export function useConfig() {
         year: data.year,
         month: data.month,
         defaultDailyTax: data.default_daily_tax,
+        logoUrl: data.logo_url || '',
       });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create default config');
@@ -74,6 +78,16 @@ export function useConfig() {
 
   const updateConfig = async (newConfig: ConfigData) => {
     try {
+      // First get the current config ID
+      const { data: currentConfig } = await supabase
+        .from('app_config')
+        .select('id')
+        .single();
+
+      if (!currentConfig) {
+        throw new Error('No configuration found');
+      }
+
       const { data, error } = await supabase
         .from('app_config')
         .update({
@@ -81,8 +95,9 @@ export function useConfig() {
           year: newConfig.year,
           month: newConfig.month,
           default_daily_tax: newConfig.defaultDailyTax,
+          logo_url: newConfig.logoUrl,
         })
-        .eq('id', (await supabase.from('app_config').select('id').single()).data?.id)
+        .eq('id', currentConfig.id)
         .select()
         .single();
 

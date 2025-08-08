@@ -16,6 +16,7 @@ export function ConfigModal({ isOpen, onClose, config, onConfigUpdate }: ConfigM
     const formData = new FormData(e.currentTarget);
     onConfigUpdate({
       appName: formData.get('appName') as string,
+      logoUrl: formData.get('logoUrl') as string || '',
       year: parseInt(formData.get('year') as string),
       month: parseInt(formData.get('month') as string),
       defaultDailyTax: parseFloat(formData.get('defaultDailyTax') as string),
@@ -72,6 +73,16 @@ export function ConfigModal({ isOpen, onClose, config, onConfigUpdate }: ConfigM
                       defaultValue={config.appName}
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                       required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Logo URL</label>
+                    <input
+                      type="url"
+                      name="logoUrl"
+                      defaultValue={config.logoUrl}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                      placeholder="https://example.com/logo.png"
                     />
                   </div>
                   <div className="grid grid-cols-3 gap-4">
