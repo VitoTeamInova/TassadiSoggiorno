@@ -7,28 +7,135 @@ interface NightlyStayFormProps {
   onSubmit: (stay: Omit<NightlyStay, 'id' | 'totalTax' | 'month'>) => void;
   onCancel: () => void;
   config: ConfigData;
+  onComplete?: () => void;
 }
 
-export function NightlyStayForm({ onSubmit, onCancel, config }: NightlyStayFormProps) {
+export function NightlyStayForm({ onSubmit, onCancel, config, onComplete }: NightlyStayFormProps) {
+  const [entryDate, setEntryDate] = React.useState('');
+  const [numNights, setNumNights] = React.useState(1);
+  const [exitDate, setExitDate] = React.useState('');
+  const [crossMonthInfo, setCrossMonthInfo] = React.useState('');
+
+  React.useEffect(() => {
+    if (entryDate && numNights > 0) {
+      const entry = new Date(entryDate);
+      const exit = new Date(entry);
+      exit.setDate(entry.getDate() + numNights);
+      
+      setExitDate(exit.toISOString().split('T')[0]);
+      
+      // Check if stay crosses months
+      const entryMonth = entry.getMonth();
+      const exitMonth = exit.getMonth();
+      
+      if (entryMonth !== exitMonth || entry.getFullYear() !== exit.getFullYear()) {
+        // Calculate days in each month
+        const lastDayOfEntryMonth = new Date(entry.getFullYear(), entry.getMonth() + 1, 0);
+        const daysInFirstMonth = lastDayOfEntryMonth.getDate() - entry.getDate() + 1;
+        const daysInSecondMonth = numNights - daysInFirstMonth;
+        
+        const monthNames = [
+          'January', 'February', 'March', 'April', 'May', 'June',
+          'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+        
+        setCrossMonthInfo(`Cross Month Stay: ${daysInFirstMonth} days in ${monthNames[entryMonth]} and ${daysInSecondMonth} days in ${monthNames[exitMonth]}`);
+      } else {
+        setCrossMonthInfo('');
+      }
+    }
+  }, [entryDate, numNights]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     
-    const stay = {
-      entryDate: formData.get('entryDate') as string,
-      numGuests: parseInt(formData.get('numGuests') as string),
-      numNights: parseInt(formData.get('numNights') as string),
-      firstName: formData.get('firstName') as string,
-      lastName: formData.get('lastName') as string,
-      numMinors: parseInt(formData.get('numMinors') as string),
-      dailyTax: parseFloat(formData.get('dailyTax') as string),
-      preStayNotes: formData.get('preStayNotes') as string || '',
-      postStayNotes: formData.get('postStayNotes') as string || '',
-    };
+    const entryDateValue = formData.get('entryDate') as string;
+    const numNightsValue = parseInt(formData.get('numNights') as string);
+    const numGuests = parseInt(formData.get('numGuests') as string);
+    const numMinors = parseInt(formData.get('numMinors') as string);
+    const dailyTax = parseFloat(formData.get('dailyTax') as string);
+    const firstName = formData.get('firstName') as string;
+    const lastName = formData.get('lastName') as string;
+    const preStayNotes = formData.get('preStayNotes') as string || '';
+    const postStayNotes = formData.get('postStayNotes') as string || '';
+    
+    const entry = new Date(entryDateValue);
+    const exit = new Date(entry);
+    exit.setDate(entry.getDate() + numNightsValue);
+    
+    // Check if stay crosses months
+    const entryMonth = entry.getMonth();
+    const exitMonth = exit.getMonth();
+    
+    if (entryMonth !== exitMonth || entry.getFullYear() !== exit.getFullYear()) {
+      // Create two stays for cross-month
+      const lastDayOfEntryMonth = new Date(entry.getFullYear(), entry.getMonth() + 1, 0);
+      const daysInFirstMonth = lastDayOfEntryMonth.getDate() - entry.getDate() + 1;
+      const daysInSecondMonth = numNightsValue - daysInFirstMonth;
+      
+      // First month stay
+      const firstStay = {
+        entryDate: entryDateValue,
+        numGuests,
+        numNights: daysInFirstMonth,
+        firstName,
+        lastName,
+        numMinors,
+        dailyTax,
+        preStayNotes: preStayNotes + (crossMonthInfo ? ` (${crossMonthInfo})` : ''),
+        postStayNotes,
+      };
+      
+      // Second month stay
+      const firstDayOfNextMonth = new Date(entry.getFullYear(), entry.getMonth() + 1, 1);
+      const secondStay = {
+        entryDate: firstDayOfNextMonth.toISOString().split('T')[0],
+        numGuests,
+        numNights: daysInSecondMonth,
+        firstName,
+        lastName,
+        numMinors,
+        dailyTax,
+        preStayNotes: preStayNotes + (crossMonthInfo ? ` (${crossMonthInfo})` : ''),
+        postStayNotes,
+      };
+      
+      // Submit both stays
+      onSubmit(firstStay);
+      setTimeout(() => {
+        onSubmit(secondStay);
+        onComplete?.();
+      }, 100); // Small delay to ensure proper order
+    } else {
+      // Single month stay
+      const stay = {
+        entryDate: entryDateValue,
+        numGuests,
+        numNights: numNightsValue,
+        firstName,
+        lastName,
+        numMinors,
+        dailyTax,
+        preStayNotes,
+        postStayNotes,
+      };
+      
+      onSubmit(stay);
+      onComplete?.();
+    }
 
-    onSubmit(stay);
     e.currentTarget.reset();
+    setEntryDate('');
+    setNumNights(1);
+    setExitDate('');
+    setCrossMonthInfo('');
+  };
+
+  // Get default date based on config
+  const getDefaultDate = () => {
+    const date = new Date(config.year, config.month - 1, 1);
+    return date.toISOString().split('T')[0];
   };
 
   return (
@@ -56,26 +163,30 @@ export function NightlyStayForm({ onSubmit, onCancel, config }: NightlyStayFormP
         </button>
       </div>
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">Entry Date</label>
             <input
               type="date"
               name="entryDate"
+              value={entryDate}
+              onChange={(e) => setEntryDate(e.target.value)}
+              defaultValue={getDefaultDate()}
               className="mt-1 block w-full rounded-md border-2 border-gray-400 bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Daily Tax (€)</label>
+            <label className="block text-sm font-medium text-gray-700">Exit Date</label>
             <input
-              type="number"
-              name="dailyTax"
-              step="0.01"
-              defaultValue={config.defaultDailyTax}
-              className="mt-1 block w-full rounded-md border-2 border-gray-400 bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2"
-              required
+              type="date"
+              value={exitDate}
+              className="mt-1 block w-full rounded-md border-2 border-gray-400 bg-gray-100 shadow-sm px-3 py-2"
+              readOnly
             />
+            {crossMonthInfo && (
+              <p className="mt-1 text-xs text-orange-600 font-medium">{crossMonthInfo}</p>
+            )}
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4">
@@ -125,6 +236,21 @@ export function NightlyStayForm({ onSubmit, onCancel, config }: NightlyStayFormP
               type="number"
               name="numNights"
               min="1"
+              value={numNights}
+              onChange={(e) => setNumNights(parseInt(e.target.value) || 1)}
+              className="mt-1 block w-full rounded-md border-2 border-gray-400 bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2"
+              required
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Daily Tax (€)</label>
+            <input
+              type="number"
+              name="dailyTax"
+              step="0.01"
+              defaultValue={config.defaultDailyTax}
               className="mt-1 block w-full rounded-md border-2 border-gray-400 bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2"
               required
             />

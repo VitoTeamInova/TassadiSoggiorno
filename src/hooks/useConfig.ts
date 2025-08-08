@@ -103,7 +103,13 @@ export function useConfig() {
 
       if (error) throw error;
 
-      setConfig(newConfig);
+      setConfig({
+        appName: data.app_name,
+        year: data.year,
+        month: data.month,
+        defaultDailyTax: data.default_daily_tax,
+        logoUrl: data.logo_url || '',
+      });
       return newConfig;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update config');

@@ -39,12 +39,14 @@ function App() {
 
     try {
       await addStay(newStay);
-      setShowNewStay(false);
     } catch (error) {
       console.error('Failed to add stay:', error);
     }
   };
 
+  const handleStaySubmitComplete = () => {
+    setShowNewStay(false);
+  };
   const handleStayUpdate = async (updatedStay: NightlyStay) => {
     try {
       await updateStay(updatedStay);
@@ -90,6 +92,7 @@ function App() {
             <NightlyStayForm 
               onSubmit={handleStaySubmit} 
               onCancel={() => setShowNewStay(false)}
+              onComplete={handleStaySubmitComplete}
               config={config}
             />
           ) : selectedMonth ? (
