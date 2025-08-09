@@ -84,7 +84,7 @@ export function MonthlyView({ month, stays, onBack, onEditStay, onNewStay, onDel
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  {new Date(stay.entryDate).toLocaleDateString()}
+                  {new Date(stay.entryDate + 'T00:00:00').toLocaleDateString()}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   {stay.numNights}
@@ -96,7 +96,7 @@ export function MonthlyView({ month, stays, onBack, onEditStay, onNewStay, onDel
                   €{stay.totalTax.toFixed(2)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     <button
                       onClick={() => onEditStay(stay)}
                       className="text-blue-600 hover:text-blue-800 transition-colors"
