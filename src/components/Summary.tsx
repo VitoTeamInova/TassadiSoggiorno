@@ -17,7 +17,7 @@ export function Summary({ stays, onNewStay, onMonthSelect }: SummaryProps) {
   }));
 
   stays.forEach((stay) => {
-    const monthIndex = stay.month - 1; // Use the month field from the stay record
+    const monthIndex = stay.month - 1;
     monthlyTotals[monthIndex].totalTax += stay.totalTax;
     monthlyTotals[monthIndex].totalNights += stay.numNights;
     monthlyTotals[monthIndex].totalGuests += stay.numGuests;

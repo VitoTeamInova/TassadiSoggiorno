@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, Edit2, PlusCircle } from 'lucide-react';
+import { ArrowLeft, Edit2, PlusCircle, Trash2 } from 'lucide-react';
 import { NightlyStay } from '../types';
 
 interface MonthlyViewProps {
@@ -8,18 +8,36 @@ interface MonthlyViewProps {
   onBack: () => void;
   onEditStay: (stay: NightlyStay) => void;
   onNewStay: () => void;
+  onDeleteStay: (id: string) => void;
 }
 
-export function MonthlyView({ month, stays, onBack, onEditStay, onNewStay }: MonthlyViewProps) {
+export function MonthlyView({ month, stays, onBack, onEditStay, onNewStay, onDeleteStay }: MonthlyViewProps) {
   const months = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
   ];
 
   const monthlyStays = stays.filter(stay => stay.month === month);
+  const [deleteConfirm, setDeleteConfirm] = React.useState<NightlyStay | null>(null);
+
+  const handleDeleteClick = (stay: NightlyStay) => {
+    setDeleteConfirm(stay);
+  };
+
+  const handleConfirmDelete = () => {
+    if (deleteConfirm) {
+      onDeleteStay(deleteConfirm.id);
+      setDeleteConfirm(null);
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteConfirm(null);
+  };
 
   return (
-    <div className="space-y-6">
+    <>
+      <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button
@@ -78,18 +96,62 @@ export function MonthlyView({ month, stays, onBack, onEditStay, onNewStay }: Mon
                   €{stay.totalTax.toFixed(2)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <button
-                    onClick={() => onEditStay(stay)}
-                    className="text-blue-600 hover:text-blue-800 transition-colors"
-                  >
-                    <Edit2 className="w-5 h-5" />
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => onEditStay(stay)}
+                      className="text-blue-600 hover:text-blue-800 transition-colors"
+                      title="Edit Stay"
+                    >
+                      <Edit2 className="w-5 h-5" />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteClick(stay)}
+                      className="text-red-600 hover:text-red-800 transition-colors"
+                      title="Delete Stay"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-    </div>
+      </div>
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Confirm Delete
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to delete the stay for{' '}
+              <span className="font-medium">{deleteConfirm.firstName} {deleteConfirm.lastName}</span>{' '}
+              for {deleteConfirm.numNights} days starting from{' '}
+              <span className="font-medium">
+                {new Date(deleteConfirm.entryDate).toLocaleDateString()}
+              </span>?
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={handleCancelDelete}
+                className="px-4 py-2 text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmDelete}
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

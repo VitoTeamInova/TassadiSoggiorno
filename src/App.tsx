@@ -13,7 +13,7 @@ import { LoadingSpinner } from './components/LoadingSpinner';
 
 function App() {
   const { config, loading: configLoading, updateConfig } = useConfig();
-  const { stays, loading: staysLoading, addStay, updateStay } = useStays();
+  const { stays, loading: staysLoading, addStay, updateStay, deleteStay } = useStays();
   const [showNewStay, setShowNewStay] = useState(false);
   const [showConfig, setShowConfig] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
@@ -53,6 +53,14 @@ function App() {
       setEditingStay(null);
     } catch (error) {
       console.error('Failed to update stay:', error);
+    }
+  };
+
+  const handleStayDelete = async (id: string) => {
+    try {
+      await deleteStay(id);
+    } catch (error) {
+      console.error('Failed to delete stay:', error);
     }
   };
 
@@ -102,6 +110,7 @@ function App() {
               onBack={() => setSelectedMonth(null)}
               onEditStay={setEditingStay}
               onNewStay={() => setShowNewStay(true)}
+              onDeleteStay={handleStayDelete}
             />
           ) : (
             <Summary 
