@@ -56,7 +56,14 @@ export function MonthlyView({ month, stays, onBack, onEditStay, onNewStay }: Mon
             {monthlyStays.map((stay) => (
               <tr key={stay.id} className="hover:bg-gray-50">
                 <td className="px-6 py-4 whitespace-nowrap">
-                  {stay.firstName} {stay.lastName}
+                  <div>
+                    {stay.firstName} {stay.lastName}
+                    {stay.preStayNotes.includes('Multi-Month Stay') && (
+                      <div className="text-xs text-red-600 font-medium mt-1">
+                        {stay.preStayNotes.split('\n').find(line => line.includes('Multi-Month Stay'))}
+                      </div>
+                    )}
+                  </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   {new Date(stay.entryDate).toLocaleDateString()}

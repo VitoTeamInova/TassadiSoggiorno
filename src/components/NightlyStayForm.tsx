@@ -83,7 +83,7 @@ export function NightlyStayForm({ onSubmit, onCancel, config, onComplete }: Nigh
         lastName,
         numMinors,
         dailyTax,
-        preStayNotes: preStayNotes + (crossMonthInfo ? ` (${crossMonthInfo})` : ''),
+        preStayNotes: preStayNotes + `\nMulti-Month Stay - from: ${entryDateValue} to ${exitDate}`,
         postStayNotes,
       };
       
@@ -97,7 +97,7 @@ export function NightlyStayForm({ onSubmit, onCancel, config, onComplete }: Nigh
         lastName,
         numMinors,
         dailyTax,
-        preStayNotes: preStayNotes + (crossMonthInfo ? ` (${crossMonthInfo})` : ''),
+        preStayNotes: preStayNotes + `\nMulti-Month Stay - from: ${entryDateValue} to ${exitDate}`,
         postStayNotes,
       };
       
@@ -163,7 +163,7 @@ export function NightlyStayForm({ onSubmit, onCancel, config, onComplete }: Nigh
         </button>
       </div>
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">Entry Date</label>
             <input
@@ -177,6 +177,18 @@ export function NightlyStayForm({ onSubmit, onCancel, config, onComplete }: Nigh
             />
           </div>
           <div>
+            <label className="block text-sm font-medium text-gray-700">Number of Nights</label>
+            <input
+              type="number"
+              name="numNights"
+              min="1"
+              value={numNights}
+              onChange={(e) => setNumNights(parseInt(e.target.value) || 1)}
+              className="mt-1 block w-full rounded-md border-2 border-gray-400 bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2"
+              required
+            />
+          </div>
+          <div>
             <label className="block text-sm font-medium text-gray-700">Exit Date</label>
             <input
               type="date"
@@ -184,11 +196,13 @@ export function NightlyStayForm({ onSubmit, onCancel, config, onComplete }: Nigh
               className="mt-1 block w-full rounded-md border-2 border-gray-400 bg-gray-100 shadow-sm px-3 py-2"
               readOnly
             />
-            {crossMonthInfo && (
-              <p className="mt-1 text-xs text-orange-600 font-medium">{crossMonthInfo}</p>
-            )}
           </div>
         </div>
+        {crossMonthInfo && (
+          <div className="bg-orange-50 border border-orange-200 rounded-md p-3">
+            <p className="text-sm text-orange-600 font-medium">{crossMonthInfo}</p>
+          </div>
+        )}
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">First Name</label>
@@ -209,7 +223,7 @@ export function NightlyStayForm({ onSubmit, onCancel, config, onComplete }: Nigh
             />
           </div>
         </div>
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-4 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">Number of Guests</label>
             <input
@@ -230,20 +244,6 @@ export function NightlyStayForm({ onSubmit, onCancel, config, onComplete }: Nigh
               required
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Number of Nights</label>
-            <input
-              type="number"
-              name="numNights"
-              min="1"
-              value={numNights}
-              onChange={(e) => setNumNights(parseInt(e.target.value) || 1)}
-              className="mt-1 block w-full rounded-md border-2 border-gray-400 bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2"
-              required
-            />
-          </div>
-        </div>
-        <div className="grid grid-cols-1 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">Daily Tax (€)</label>
             <input
