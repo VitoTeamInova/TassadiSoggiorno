@@ -19,14 +19,14 @@ export function useStays() {
 
       const formattedStays: NightlyStay[] = data.map(stay => ({
         id: stay.id,
-        entryDate: stay.entry_date,
+        entryDate: stay.entry_date || '',
         firstName: stay.first_name,
         lastName: stay.last_name,
         numGuests: stay.num_guests,
         numMinors: stay.num_minors,
         numNights: stay.num_nights,
-        dailyTax: stay.daily_tax,
-        totalTax: stay.total_tax,
+        dailyTax: Number(stay.daily_tax) || 0,
+        totalTax: Number(stay.total_tax) || 0,
         month: stay.month,
         preStayNotes: stay.pre_stay_notes || '',
         postStayNotes: stay.post_stay_notes || '',

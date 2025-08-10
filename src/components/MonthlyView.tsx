@@ -76,15 +76,22 @@ export function MonthlyView({ month, stays, onBack, onEditStay, onNewStay, onDel
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div>
                     {stay.firstName} {stay.lastName}
-                    {stay.preStayNotes.includes('Multi-Month Stay') && (
+                    {stay.preStayNotes && stay.preStayNotes.includes('Multi-Month Stay') && (
                       <div className="text-xs text-red-600 font-medium mt-1">
-                        {stay.preStayNotes.split('\n').find(line => line.includes('Multi-Month Stay'))}
+                        {stay.preStayNotes.split('\n').find(line => line.includes('Multi-Month Stay'))?.replace('Multi-Month Stay - ', '')}
                       </div>
                     )}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  {new Date(stay.entryDate + 'T00:00:00').toLocaleDateString()}
+                  {(() => {
+                    try {
+                      const date = new Date(stay.entryDate + 'T00:00:00');
+                      return isNaN(date.getTime()) ? 'Invalid Date' : date.toLocaleDateString();
+                    } catch {
+                      return 'Invalid Date';
+                    }
+                  })()}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   {stay.numNights}

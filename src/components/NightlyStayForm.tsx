@@ -71,7 +71,7 @@ export function NightlyStayForm({ onSubmit, onCancel, config, onComplete }: Nigh
     if (entryMonth !== exitMonth || entry.getFullYear() !== exit.getFullYear()) {
       // Create two stays for cross-month
       const firstDayOfNextMonth = new Date(entry.getFullYear(), entry.getMonth() + 1, 1);
-      const daysInFirstMonth = Math.ceil((firstDayOfNextMonth.getTime() - entry.getTime()) / (1000 * 60 * 60 * 24));
+      const daysInFirstMonth = Math.floor((firstDayOfNextMonth.getTime() - entry.getTime()) / (1000 * 60 * 60 * 24));
       const daysInSecondMonth = numNightsValue - daysInFirstMonth;
       
       // First month stay
@@ -83,7 +83,7 @@ export function NightlyStayForm({ onSubmit, onCancel, config, onComplete }: Nigh
         lastName,
         numMinors,
         dailyTax,
-        preStayNotes: preStayNotes + (preStayNotes ? '\n' : '') + `Multi-Month Stay - from: ${entryDateValue} to ${exitDate}`,
+        preStayNotes: preStayNotes + (preStayNotes ? '\n' : '') + `Multi-Month Stay - Original: ${entryDateValue} to ${exitDate} (Part 1 of 2)`,
         postStayNotes,
       };
       
@@ -96,7 +96,7 @@ export function NightlyStayForm({ onSubmit, onCancel, config, onComplete }: Nigh
         lastName,
         numMinors,
         dailyTax,
-        preStayNotes: preStayNotes + (preStayNotes ? '\n' : '') + `Multi-Month Stay - from: ${entryDateValue} to ${exitDate}`,
+        preStayNotes: preStayNotes + (preStayNotes ? '\n' : '') + `Multi-Month Stay - Original: ${entryDateValue} to ${exitDate} (Part 2 of 2)`,
         postStayNotes,
       };
       

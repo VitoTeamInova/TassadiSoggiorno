@@ -18,10 +18,22 @@ export function EditStayModal({ isOpen, onClose, stay, config, onUpdate }: EditS
 
   React.useEffect(() => {
     if (entryDate && numNights > 0) {
-      const entry = new Date(entryDate);
-      const exit = new Date(entry);
-      exit.setDate(entry.getDate() + numNights);
-      setExitDate(exit.toISOString().split('T')[0]);
+      try {
+        const entry = new Date(entryDate + 'T00:00:00');
+        if (!isNaN(entry.getTime())) {
+          const exit = new Date(entry);
+          exit.setDate(entry.getDate() + numNights);
+          if (!isNaN(exit.getTime())) {
+            setExitDate(exit.toISOString().split('T')[0]);
+          } else {
+            setExitDate('');
+          }
+        } else {
+          setExitDate('');
+        }
+      } catch {
+        setExitDate('');
+      }
     }
   }, [entryDate, numNights]);
 
