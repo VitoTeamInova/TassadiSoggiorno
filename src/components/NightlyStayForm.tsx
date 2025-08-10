@@ -30,8 +30,8 @@ export function NightlyStayForm({ onSubmit, onCancel, config, onComplete }: Nigh
       
       if (entryMonth !== exitMonth || entry.getFullYear() !== exit.getFullYear()) {
         // Calculate days in each month
-        const lastDayOfEntryMonth = new Date(entry.getFullYear(), entry.getMonth() + 1, 0);
-        const daysInFirstMonth = lastDayOfEntryMonth.getDate() - entry.getDate() + 1;
+        const firstDayOfNextMonth = new Date(entry.getFullYear(), entry.getMonth() + 1, 1);
+        const daysInFirstMonth = Math.ceil((firstDayOfNextMonth.getTime() - entry.getTime()) / (1000 * 60 * 60 * 24));
         const daysInSecondMonth = numNights - daysInFirstMonth;
         
         const monthNames = [
@@ -70,8 +70,8 @@ export function NightlyStayForm({ onSubmit, onCancel, config, onComplete }: Nigh
     
     if (entryMonth !== exitMonth || entry.getFullYear() !== exit.getFullYear()) {
       // Create two stays for cross-month
-      const lastDayOfEntryMonth = new Date(entry.getFullYear(), entry.getMonth() + 1, 0);
-      const daysInFirstMonth = lastDayOfEntryMonth.getDate() - entry.getDate() + 1;
+      const firstDayOfNextMonth = new Date(entry.getFullYear(), entry.getMonth() + 1, 1);
+      const daysInFirstMonth = Math.ceil((firstDayOfNextMonth.getTime() - entry.getTime()) / (1000 * 60 * 60 * 24));
       const daysInSecondMonth = numNightsValue - daysInFirstMonth;
       
       // First month stay
@@ -83,12 +83,11 @@ export function NightlyStayForm({ onSubmit, onCancel, config, onComplete }: Nigh
         lastName,
         numMinors,
         dailyTax,
-        preStayNotes: preStayNotes + `\nMulti-Month Stay - from: ${entryDateValue} to ${exitDate}`,
+        preStayNotes: preStayNotes + (preStayNotes ? '\n' : '') + `Multi-Month Stay - from: ${entryDateValue} to ${exitDate}`,
         postStayNotes,
       };
       
       // Second month stay
-      const firstDayOfNextMonth = new Date(entry.getFullYear(), entry.getMonth() + 1, 1);
       const secondStay = {
         entryDate: firstDayOfNextMonth.toISOString().split('T')[0],
         numGuests,
@@ -97,7 +96,7 @@ export function NightlyStayForm({ onSubmit, onCancel, config, onComplete }: Nigh
         lastName,
         numMinors,
         dailyTax,
-        preStayNotes: preStayNotes + `\nMulti-Month Stay - from: ${entryDateValue} to ${exitDate}`,
+        preStayNotes: preStayNotes + (preStayNotes ? '\n' : '') + `Multi-Month Stay - from: ${entryDateValue} to ${exitDate}`,
         postStayNotes,
       };
       
