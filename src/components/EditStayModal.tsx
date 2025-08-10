@@ -24,7 +24,12 @@ export function EditStayModal({ isOpen, onClose, stay, config, onUpdate }: EditS
           const exit = new Date(entry);
           exit.setDate(entry.getDate() + numNights);
           if (!isNaN(exit.getTime())) {
-            setExitDate(exit.toISOString().split('T')[0]);
+            // For multi-month stays (Part 1), don't show exit date
+            if (stay.preStayNotes && stay.preStayNotes.includes('Multi-Month Stay') && stay.preStayNotes.includes('Part 1 of 2')) {
+              setExitDate('');
+            } else {
+              setExitDate(exit.toISOString().split('T')[0]);
+            }
           } else {
             setExitDate('');
           }
@@ -142,9 +147,17 @@ export function EditStayModal({ isOpen, onClose, stay, config, onUpdate }: EditS
                       <input
                         type="date"
                         value={exitDate}
-                        className="mt-1 block w-full rounded-md border-2 border-gray-400 bg-gray-100 shadow-sm px-3 py-2"
+                        className={`mt-1 block w-full rounded-md border-2 border-gray-400 shadow-sm px-3 py-2 ${
+                          exitDate ? 'bg-gray-100' : 'bg-yellow-50 border-yellow-300'
+                        }`}
+                        placeholder={exitDate ? '' : 'Continues next month'}
                         readOnly
                       />
+                      {!exitDate && (
+                        <p className="text-xs text-yellow-600 mt-1">
+                          Multi-month stay continues into next month
+                        </p>
+                      )}
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">

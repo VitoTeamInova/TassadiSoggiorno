@@ -70,9 +70,11 @@ export function NightlyStayForm({ onSubmit, onCancel, config, onComplete }: Nigh
     
     if (entryMonth !== exitMonth || entry.getFullYear() !== exit.getFullYear()) {
       // Create two stays for cross-month
-      const firstDayOfNextMonth = new Date(entry.getFullYear(), entry.getMonth() + 1, 1);
-      const daysInFirstMonth = Math.floor((firstDayOfNextMonth.getTime() - entry.getTime()) / (1000 * 60 * 60 * 24));
+      const lastDayOfEntryMonth = new Date(entry.getFullYear(), entry.getMonth() + 1, 0).getDate();
+      const daysInFirstMonth = lastDayOfEntryMonth - entry.getDate() + 1;
       const daysInSecondMonth = numNightsValue - daysInFirstMonth;
+      
+      const firstDayOfNextMonth = new Date(entry.getFullYear(), entry.getMonth() + 1, 1);
       
       // First month stay
       const firstStay = {

@@ -84,14 +84,49 @@ export function MonthlyView({ month, stays, onBack, onEditStay, onNewStay, onDel
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  {(() => {
-                    try {
-                      const date = new Date(stay.entryDate + 'T00:00:00');
-                      return isNaN(date.getTime()) ? 'Invalid Date' : date.toLocaleDateString();
-                    } catch {
-                      return 'Invalid Date';
-                    }
-                  })()}
+                  <div>
+                    {(() => {
+                      try {
+                        const date = new Date(stay.entryDate + 'T00:00:00');
+                        return isNaN(date.getTime()) ? 'Invalid Date' : date.toLocaleDateString();
+                      } catch {
+                        return 'Invalid Date';
+                      }
+                    })()}
+                    {stay.preStayNotes && stay.preStayNotes.includes('Multi-Month Stay') && stay.preStayNotes.includes('Part 1 of 2') && (
+                      <div className="text-xs text-gray-500 mt-1">
+                        Exit: (Continues next month)
+                      </div>
+                    )}
+                    {stay.preStayNotes && stay.preStayNotes.includes('Multi-Month Stay') && stay.preStayNotes.includes('Part 2 of 2') && (
+                      <div className="text-xs text-gray-500 mt-1">
+                        Exit: {(() => {
+                          try {
+                            const entryDate = new Date(stay.entryDate + 'T00:00:00');
+                            const exitDate = new Date(entryDate);
+                            exitDate.setDate(entryDate.getDate() + stay.numNights);
+                            return isNaN(exitDate.getTime()) ? '' : exitDate.toLocaleDateString();
+                          } catch {
+                            return '';
+                          }
+                        })()}
+                      </div>
+                    )}
+                    {(!stay.preStayNotes || !stay.preStayNotes.includes('Multi-Month Stay')) && (
+                      <div className="text-xs text-gray-500 mt-1">
+                        Exit: {(() => {
+                          try {
+                            const entryDate = new Date(stay.entryDate + 'T00:00:00');
+                            const exitDate = new Date(entryDate);
+                            exitDate.setDate(entryDate.getDate() + stay.numNights);
+                            return isNaN(exitDate.getTime()) ? '' : exitDate.toLocaleDateString();
+                          } catch {
+                            return '';
+                          }
+                        })()}
+                      </div>
+                    )}
+                  </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   {stay.numNights}
