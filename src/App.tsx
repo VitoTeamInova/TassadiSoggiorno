@@ -29,12 +29,11 @@ function App() {
 
   const handleStaySubmit = async (stay: Omit<NightlyStay, 'id' | 'totalTax' | 'month'>) => {
     const totalTax = (stay.numGuests - stay.numMinors) * stay.numNights * stay.dailyTax;
-    const month = new Date(stay.entryDate).getMonth() + 1;
+    // Month will be calculated in the hook based on actual entry date
     
     const newStay = {
       ...stay,
       totalTax,
-      month,
     };
 
     try {

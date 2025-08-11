@@ -89,9 +89,10 @@ export function NightlyStayForm({ onSubmit, onCancel, config, onComplete }: Nigh
         postStayNotes,
       };
       
+      const secondEntryDate = firstDayOfNextMonth.toISOString().split('T')[0];
       // Second month stay
       const secondStay = {
-        entryDate: firstDayOfNextMonth.toISOString().split('T')[0],
+        entryDate: secondEntryDate,
         numGuests,
         numNights: daysInSecondMonth,
         firstName,

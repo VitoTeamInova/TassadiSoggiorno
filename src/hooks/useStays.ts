@@ -43,6 +43,10 @@ export function useStays() {
 
   const addStay = async (stay: Omit<NightlyStay, 'id'>) => {
     try {
+      // Calculate month from the actual entry date
+      const entryDate = new Date(stay.entryDate + 'T00:00:00');
+      const calculatedMonth = entryDate.getMonth() + 1;
+      
       const { data, error } = await supabase
         .from('stays')
         .insert({
@@ -54,7 +58,7 @@ export function useStays() {
           num_nights: stay.numNights,
           daily_tax: stay.dailyTax,
           total_tax: stay.totalTax,
-          month: stay.month,
+          month: calculatedMonth,
           pre_stay_notes: stay.preStayNotes || '',
           post_stay_notes: stay.postStayNotes || '',
         })
@@ -73,7 +77,7 @@ export function useStays() {
         numNights: data.num_nights,
         dailyTax: data.daily_tax,
         totalTax: data.total_tax,
-        month: data.month,
+        month: calculatedMonth,
         preStayNotes: data.pre_stay_notes || '',
         postStayNotes: data.post_stay_notes || '',
       };
