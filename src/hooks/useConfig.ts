@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { ConfigData } from '../types';
+import { User } from '@supabase/supabase-js';
 
-export function useConfig() {
+export function useConfig(user: User | null) {
   const [config, setConfig] = useState<ConfigData>({
     appName: 'TeamInova B&B Local Stay Tax Calculator',
     year: new Date().getFullYear(),
@@ -14,11 +15,17 @@ export function useConfig() {
   const [error, setError] = useState<string | null>(null);
 
   const fetchConfig = async () => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       const { data, error } = await supabase
         .from('app_config')
         .select('*')
+        .eq('user_id', user.id)
         .limit(1)
         .single();
 
@@ -47,8 +54,13 @@ export function useConfig() {
   };
 
   const createDefaultConfig = async () => {
+    if (!user) {
+      throw new Error('User not authenticated');
+    }
+
     try {
       const defaultConfig = {
+        user_id: user.id,
         app_name: 'TeamInova B&B Local Stay Tax Calculator',
         year: new Date().getFullYear(),
         month: new Date().getMonth() + 1,
@@ -77,11 +89,16 @@ export function useConfig() {
   };
 
   const updateConfig = async (newConfig: ConfigData) => {
+    if (!user) {
+      throw new Error('User not authenticated');
+    }
+
     try {
       // First get the current config ID
       const { data: currentConfig } = await supabase
         .from('app_config')
         .select('id')
+        .eq('user_id', user.id)
         .single();
 
       if (!currentConfig) {
@@ -118,8 +135,10 @@ export function useConfig() {
   };
 
   useEffect(() => {
-    fetchConfig();
-  }, []);
+    if (user) {
+      fetchConfig();
+    }
+  }, [user]);
 
   return {
     config,

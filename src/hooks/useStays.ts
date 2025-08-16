@@ -1,18 +1,26 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { NightlyStay } from '../types';
+import { User } from '@supabase/supabase-js';
 
-export function useStays() {
+export function useStays(user: User | null) {
   const [stays, setStays] = useState<NightlyStay[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchStays = async () => {
+    if (!user) {
+      setStays([]);
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       const { data, error } = await supabase
         .from('stays')
         .select('*')
+        .eq('user_id', user.id)
         .order('entry_date', { ascending: false });
 
       if (error) throw error;
@@ -42,6 +50,10 @@ export function useStays() {
   };
 
   const addStay = async (stay: Omit<NightlyStay, 'id'>) => {
+    if (!user) {
+      throw new Error('User not authenticated');
+    }
+
     try {
       // Calculate month from the actual entry date
       const entryDate = new Date(stay.entryDate + 'T00:00:00');
@@ -50,6 +62,7 @@ export function useStays() {
       const { data, error } = await supabase
         .from('stays')
         .insert({
+          user_id: user.id,
           entry_date: stay.entryDate,
           first_name: stay.firstName,
           last_name: stay.lastName,
@@ -91,6 +104,10 @@ export function useStays() {
   };
 
   const updateStay = async (updatedStay: NightlyStay) => {
+    if (!user) {
+      throw new Error('User not authenticated');
+    }
+
     try {
       const { data, error } = await supabase
         .from('stays')
@@ -125,6 +142,10 @@ export function useStays() {
   };
 
   const deleteStay = async (id: string) => {
+    if (!user) {
+      throw new Error('User not authenticated');
+    }
+
     try {
       const { error } = await supabase
         .from('stays')
@@ -141,8 +162,10 @@ export function useStays() {
   };
 
   useEffect(() => {
-    fetchStays();
-  }, []);
+    if (user) {
+      fetchStays();
+    }
+  }, [user]);
 
   return {
     stays,

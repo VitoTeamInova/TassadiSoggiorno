@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Settings } from 'lucide-react';
+import { AuthForm } from './components/AuthForm';
+import { Header } from './components/Header';
 import { ConfigModal } from './components/ConfigModal';
 import { NightlyStayForm } from './components/NightlyStayForm';
 import { Summary } from './components/Summary';
@@ -9,11 +10,13 @@ import { Footer } from './components/Footer';
 import { NightlyStay } from './types';
 import { useStays } from './hooks/useStays';
 import { useConfig } from './hooks/useConfig';
+import { useAuth } from './hooks/useAuth';
 import { LoadingSpinner } from './components/LoadingSpinner';
 
 function App() {
-  const { config, loading: configLoading, updateConfig } = useConfig();
-  const { stays, loading: staysLoading, addStay, updateStay, deleteStay } = useStays();
+  const { user, loading: authLoading, signOut } = useAuth();
+  const { config, loading: configLoading, updateConfig } = useConfig(user);
+  const { stays, loading: staysLoading, addStay, updateStay, deleteStay } = useStays(user);
   const [showNewStay, setShowNewStay] = useState(false);
   const [showConfig, setShowConfig] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
@@ -63,6 +66,18 @@ function App() {
     }
   };
 
+  const handleAuthSuccess = () => {
+    // Auth success is handled by the useAuth hook
+  };
+
+  if (authLoading) {
+    return <LoadingSpinner />;
+  }
+
+  if (!user) {
+    return <AuthForm onAuthSuccess={handleAuthSuccess} />;
+  }
+
   if (configLoading || staysLoading) {
     return <LoadingSpinner />;
   }
@@ -71,29 +86,12 @@ function App() {
     <div className="min-h-screen bg-gray-100 flex flex-col">
       <div className="flex-1 p-6">
         <div className="max-w-7xl mx-auto space-y-6">
-          <header className="bg-white rounded-lg shadow-md p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                {config.logoUrl && (
-                  <img 
-                    src={config.logoUrl} 
-                    alt="Logo" 
-                    className="h-12 w-auto object-contain"
-                  />
-                )}
-                <h1 className="text-3xl font-bold text-gray-800">
-                  {config.appName}
-                </h1>
-              </div>
-              <button
-                onClick={() => setShowConfig(true)}
-                className="flex items-center gap-2 bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 transition-colors"
-              >
-                <Settings className="w-5 h-5" />
-                Settings
-              </button>
-            </div>
-          </header>
+          <Header
+            config={config}
+            userEmail={user.email || ''}
+            onSettingsClick={() => setShowConfig(true)}
+            onSignOut={signOut}
+          />
         
           {showNewStay ? (
             <NightlyStayForm 

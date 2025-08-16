@@ -12,6 +12,7 @@ export interface Database {
       stays: {
         Row: {
           id: string
+          user_id: string
           entry_date: string
           first_name: string
           last_name: string
@@ -28,6 +29,7 @@ export interface Database {
         }
         Insert: {
           id?: string
+          user_id: string
           entry_date: string
           first_name: string
           last_name: string
@@ -44,6 +46,7 @@ export interface Database {
         }
         Update: {
           id?: string
+          user_id?: string
           entry_date?: string
           first_name?: string
           last_name?: string
@@ -62,6 +65,7 @@ export interface Database {
       app_config: {
         Row: {
           id: string
+          user_id: string
           app_name: string
           year: number
           month: number
@@ -72,6 +76,7 @@ export interface Database {
         }
         Insert: {
           id?: string
+          user_id: string
           app_name?: string
           year?: number
           month?: number
@@ -82,6 +87,7 @@ export interface Database {
         }
         Update: {
           id?: string
+          user_id?: string
           app_name?: string
           year?: number
           month?: number
