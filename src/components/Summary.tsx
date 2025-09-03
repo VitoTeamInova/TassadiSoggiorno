@@ -1,14 +1,16 @@
 import React from 'react';
 import { PlusCircle, TrendingUp } from 'lucide-react';
 import { MonthlyTotal, TrimesterTotal, NightlyStay } from '../types';
+import { Translations } from '../i18n/translations';
 
 interface SummaryProps {
   stays: NightlyStay[];
+  t: Translations;
   onNewStay: () => void;
   onMonthSelect: (month: number) => void;
 }
 
-export function Summary({ stays, onNewStay, onMonthSelect }: SummaryProps) {
+export function Summary({ stays, t, onNewStay, onMonthSelect }: SummaryProps) {
   const monthlyTotals: MonthlyTotal[] = Array.from({ length: 12 }, (_, i) => ({
     month: i + 1,
     totalTax: 0,
@@ -47,8 +49,9 @@ export function Summary({ stays, onNewStay, onMonthSelect }: SummaryProps) {
   );
 
   const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
+    t.months.january, t.months.february, t.months.march, t.months.april,
+    t.months.may, t.months.june, t.months.july, t.months.august,
+    t.months.september, t.months.october, t.months.november, t.months.december
   ];
 
   return (
@@ -56,7 +59,7 @@ export function Summary({ stays, onNewStay, onMonthSelect }: SummaryProps) {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold flex items-center gap-2">
           <TrendingUp className="w-6 h-6 text-blue-600" />
-          Summary Report
+          {t.summaryReport}
         </h1>
         <div>
           <button
@@ -64,14 +67,14 @@ export function Summary({ stays, onNewStay, onMonthSelect }: SummaryProps) {
             className="flex items-center gap-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
           >
             <PlusCircle className="w-5 h-5" />
-            New Stay
+            {t.newStay}
           </button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-lg font-semibold mb-4">Monthly Totals</h3>
+          <h3 className="text-lg font-semibold mb-4">{t.monthlyTotals}</h3>
           <div className="space-y-2">
             {monthlyTotals.map((month, index) => (
               <button
@@ -82,8 +85,8 @@ export function Summary({ stays, onNewStay, onMonthSelect }: SummaryProps) {
                 <span className="font-medium">{months[index]}</span>
                 <div className="space-x-4">
                   <span>€{month.totalTax.toFixed(2)}</span>
-                  <span>{month.totalNights} nights</span>
-                  <span>{month.totalGuests} guests</span>
+                  <span>{month.totalNights} {t.nights}</span>
+                  <span>{month.totalGuests} {t.guests}</span>
                 </div>
               </button>
             ))}
@@ -91,15 +94,15 @@ export function Summary({ stays, onNewStay, onMonthSelect }: SummaryProps) {
         </div>
 
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-lg font-semibold mb-4">Trimester Totals</h3>
+          <h3 className="text-lg font-semibold mb-4">{t.trimesterTotals}</h3>
           <div className="space-y-2">
             {trimesterTotals.map((trimester, index) => (
               <div key={index} className="flex justify-between items-center text-sm">
                 <span className="font-medium">Q{trimester.trimester}</span>
                 <div className="space-x-4">
                   <span>€{trimester.totalTax.toFixed(2)}</span>
-                  <span>{trimester.totalNights} nights</span>
-                  <span>{trimester.totalGuests} guests</span>
+                  <span>{trimester.totalNights} {t.nights}</span>
+                  <span>{trimester.totalGuests} {t.guests}</span>
                 </div>
               </div>
             ))}
@@ -107,18 +110,18 @@ export function Summary({ stays, onNewStay, onMonthSelect }: SummaryProps) {
         </div>
 
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-lg font-semibold mb-4">Yearly Total</h3>
+          <h3 className="text-lg font-semibold mb-4">{t.yearlyTotal}</h3>
           <div className="space-y-2">
             <div className="flex justify-between items-center text-sm">
-              <span className="font-medium">Total Tax</span>
+              <span className="font-medium">{t.totalTax}</span>
               <span>€{yearlyTotal.totalTax.toFixed(2)}</span>
             </div>
             <div className="flex justify-between items-center text-sm">
-              <span className="font-medium">Total Nights</span>
+              <span className="font-medium">{t.totalNights}</span>
               <span>{yearlyTotal.totalNights}</span>
             </div>
             <div className="flex justify-between items-center text-sm">
-              <span className="font-medium">Total Guests</span>
+              <span className="font-medium">{t.totalGuests}</span>
               <span>{yearlyTotal.totalGuests}</span>
             </div>
           </div>

@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { LogIn, UserPlus, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { Translations } from '../i18n/translations';
 
 interface AuthFormProps {
   onAuthSuccess: () => void;
+  t: Translations;
 }
 
-export function AuthForm({ onAuthSuccess }: AuthFormProps) {
+export function AuthForm({ onAuthSuccess, t }: AuthFormProps) {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -29,10 +31,10 @@ export function AuthForm({ onAuthSuccess }: AuthFormProps) {
         if (error) throw error;
       } else {
         if (password !== confirmPassword) {
-          throw new Error('Passwords do not match');
+          throw new Error(t.passwordsDoNotMatch);
         }
         if (password.length < 6) {
-          throw new Error('Password must be at least 6 characters long');
+          throw new Error(t.passwordTooShort);
         }
         
         const { error } = await supabase.auth.signUp({
@@ -64,12 +66,12 @@ export function AuthForm({ onAuthSuccess }: AuthFormProps) {
             </div>
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            {isLogin ? 'Welcome Back' : 'Create Account'}
+            {isLogin ? t.welcomeBack : t.createAccount}
           </h1>
           <p className="text-gray-600">
             {isLogin 
-              ? 'Sign in to access your stay tax calculator' 
-              : 'Sign up to start managing your stay taxes'
+              ? t.signInDescription
+              : t.signUpDescription
             }
           </p>
         </div>
@@ -83,7 +85,7 @@ export function AuthForm({ onAuthSuccess }: AuthFormProps) {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email Address
+              {t.emailAddress}
             </label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -92,7 +94,7 @@ export function AuthForm({ onAuthSuccess }: AuthFormProps) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                placeholder="Enter your email"
+                placeholder={t.emailAddress}
                 required
               />
             </div>
@@ -100,7 +102,7 @@ export function AuthForm({ onAuthSuccess }: AuthFormProps) {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Password
+              {t.password}
             </label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -109,7 +111,7 @@ export function AuthForm({ onAuthSuccess }: AuthFormProps) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                placeholder="Enter your password"
+                placeholder={t.password}
                 required
                 minLength={6}
               />
@@ -126,7 +128,7 @@ export function AuthForm({ onAuthSuccess }: AuthFormProps) {
           {!isLogin && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Confirm Password
+                {t.confirmPassword}
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -135,7 +137,7 @@ export function AuthForm({ onAuthSuccess }: AuthFormProps) {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                  placeholder="Confirm your password"
+                  placeholder={t.confirmPassword}
                   required
                   minLength={6}
                 />
@@ -151,12 +153,12 @@ export function AuthForm({ onAuthSuccess }: AuthFormProps) {
             {loading ? (
               <>
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                {isLogin ? 'Signing In...' : 'Creating Account...'}
+                {isLogin ? t.signingIn : t.creatingAccount}
               </>
             ) : (
               <>
                 {isLogin ? <LogIn className="w-5 h-5" /> : <UserPlus className="w-5 h-5" />}
-                {isLogin ? 'Sign In' : 'Create Account'}
+                {isLogin ? t.signIn : t.signUp}
               </>
             )}
           </button>
@@ -173,8 +175,8 @@ export function AuthForm({ onAuthSuccess }: AuthFormProps) {
             className="text-blue-600 hover:text-blue-700 transition-colors text-sm"
           >
             {isLogin 
-              ? "Don't have an account? Sign up" 
-              : "Already have an account? Sign in"
+              ? t.noAccount
+              : t.haveAccount
             }
           </button>
         </div>

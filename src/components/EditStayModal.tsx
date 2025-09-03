@@ -2,16 +2,18 @@ import React from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { Edit2, X } from 'lucide-react';
 import { NightlyStay, ConfigData } from '../types';
+import { Translations } from '../i18n/translations';
 
 interface EditStayModalProps {
   isOpen: boolean;
   onClose: () => void;
   stay: NightlyStay;
   config: ConfigData;
+  t: Translations;
   onUpdate: (updatedStay: NightlyStay) => void;
 }
 
-export function EditStayModal({ isOpen, onClose, stay, config, onUpdate }: EditStayModalProps) {
+export function EditStayModal({ isOpen, onClose, stay, config, t, onUpdate }: EditStayModalProps) {
   const [entryDate, setEntryDate] = React.useState(stay.entryDate);
   const [numNights, setNumNights] = React.useState(stay.numNights);
   const [exitDate, setExitDate] = React.useState('');
@@ -106,7 +108,7 @@ export function EditStayModal({ isOpen, onClose, stay, config, onUpdate }: EditS
                     )}
                     <div className="flex items-center gap-2">
                       <Edit2 className="w-5 h-5 text-blue-600" />
-                      <Dialog.Title className="text-xl font-semibold">Edit Stay</Dialog.Title>
+                      <Dialog.Title className="text-xl font-semibold">{t.editStay}</Dialog.Title>
                     </div>
                   </div>
                   <button
@@ -120,7 +122,7 @@ export function EditStayModal({ isOpen, onClose, stay, config, onUpdate }: EditS
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Entry Date</label>
+                      <label className="block text-sm font-medium text-gray-700">{t.entryDate}</label>
                       <input
                         type="date"
                         name="entryDate"
@@ -131,7 +133,7 @@ export function EditStayModal({ isOpen, onClose, stay, config, onUpdate }: EditS
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Number of Nights</label>
+                      <label className="block text-sm font-medium text-gray-700">{t.numberOfNights}</label>
                       <input
                         type="number"
                         name="numNights"
@@ -143,7 +145,7 @@ export function EditStayModal({ isOpen, onClose, stay, config, onUpdate }: EditS
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Exit Date</label>
+                      <label className="block text-sm font-medium text-gray-700">{t.exitDate}</label>
                       <input
                         type="date"
                         value={exitDate}
@@ -151,18 +153,19 @@ export function EditStayModal({ isOpen, onClose, stay, config, onUpdate }: EditS
                           exitDate ? 'bg-gray-100' : 'bg-yellow-50 border-yellow-300'
                         }`}
                         placeholder={exitDate ? '' : 'Continues next month'}
+                        placeholder={exitDate ? '' : t.continuesNextMonth}
                         readOnly
                       />
                       {!exitDate && (
                         <p className="text-xs text-yellow-600 mt-1">
-                          Multi-month stay continues into next month
+                          {t.multiMonthStayContinues}
                         </p>
                       )}
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">First Name</label>
+                      <label className="block text-sm font-medium text-gray-700">{t.firstName}</label>
                       <input
                         type="text"
                         name="firstName"
@@ -172,7 +175,7 @@ export function EditStayModal({ isOpen, onClose, stay, config, onUpdate }: EditS
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Last Name</label>
+                      <label className="block text-sm font-medium text-gray-700">{t.lastName}</label>
                       <input
                         type="text"
                         name="lastName"
@@ -184,7 +187,7 @@ export function EditStayModal({ isOpen, onClose, stay, config, onUpdate }: EditS
                   </div>
                   <div className="grid grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Number of Guests</label>
+                      <label className="block text-sm font-medium text-gray-700">{t.numberOfGuests}</label>
                       <input
                         type="number"
                         name="numGuests"
@@ -195,7 +198,7 @@ export function EditStayModal({ isOpen, onClose, stay, config, onUpdate }: EditS
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Number of Minors</label>
+                      <label className="block text-sm font-medium text-gray-700">{t.numberOfMinors}</label>
                       <input
                         type="number"
                         name="numMinors"
@@ -206,7 +209,7 @@ export function EditStayModal({ isOpen, onClose, stay, config, onUpdate }: EditS
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">Daily Tax (€)</label>
+                      <label className="block text-sm font-medium text-gray-700">{t.dailyTax}</label>
                       <input
                         type="number"
                         name="dailyTax"
@@ -219,25 +222,25 @@ export function EditStayModal({ isOpen, onClose, stay, config, onUpdate }: EditS
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-green-700">Pre-Stay Notes</label>
+                      <label className="block text-sm font-medium text-green-700">{t.preStayNotes}</label>
                       <textarea
                         name="preStayNotes"
                         maxLength={1000}
                         rows={4}
                         defaultValue={stay.preStayNotes}
                         className="mt-1 block w-full rounded-md border-2 border-gray-400 bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2 resize-vertical"
-                        placeholder="Enter any notes before the stay..."
+                        placeholder={t.enterNotesBeforeStay}
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-blue-700">Post-Stay Notes</label>
+                      <label className="block text-sm font-medium text-blue-700">{t.postStayNotes}</label>
                       <textarea
                         name="postStayNotes"
                         maxLength={1000}
                         rows={4}
                         defaultValue={stay.postStayNotes}
                         className="mt-1 block w-full rounded-md border-2 border-gray-400 bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2 resize-vertical"
-                        placeholder="Enter any notes after the stay..."
+                        placeholder={t.enterNotesAfterStay}
                       />
                     </div>
                   </div>
@@ -245,7 +248,7 @@ export function EditStayModal({ isOpen, onClose, stay, config, onUpdate }: EditS
                     type="submit"
                     className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
                   >
-                    Update Stay
+                    {t.updateStay}
                   </button>
                 </form>
               </Dialog.Panel>

@@ -4,6 +4,7 @@ export interface ConfigData {
   month: number;
   defaultDailyTax: number;
   logoUrl: string;
+  language: string;
 }
 
 export interface NightlyStay {

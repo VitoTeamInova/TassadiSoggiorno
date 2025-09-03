@@ -2,15 +2,17 @@ import React from 'react';
 import { BedDouble, X } from 'lucide-react';
 import { NightlyStay } from '../types';
 import { ConfigData } from '../types';
+import { Translations } from '../i18n/translations';
 
 interface NightlyStayFormProps {
   onSubmit: (stay: Omit<NightlyStay, 'id' | 'totalTax' | 'month'>) => void;
   onCancel: () => void;
   config: ConfigData;
+  t: Translations;
   onComplete?: () => void;
 }
 
-export function NightlyStayForm({ onSubmit, onCancel, config, onComplete }: NightlyStayFormProps) {
+export function NightlyStayForm({ onSubmit, onCancel, config, t, onComplete }: NightlyStayFormProps) {
   const [entryDate, setEntryDate] = React.useState('');
   const [numNights, setNumNights] = React.useState(1);
   const [exitDate, setExitDate] = React.useState('');
@@ -35,11 +37,12 @@ export function NightlyStayForm({ onSubmit, onCancel, config, onComplete }: Nigh
         const daysInSecondMonth = numNights - daysInFirstMonth;
         
         const monthNames = [
-          'January', 'February', 'March', 'April', 'May', 'June',
-          'July', 'August', 'September', 'October', 'November', 'December'
+          t.months.january, t.months.february, t.months.march, t.months.april,
+          t.months.may, t.months.june, t.months.july, t.months.august,
+          t.months.september, t.months.october, t.months.november, t.months.december
         ];
         
-        setCrossMonthInfo(`Cross Month Stay: ${daysInFirstMonth} days in ${monthNames[entryMonth]} and ${daysInSecondMonth} days in ${monthNames[exitMonth]}`);
+        setCrossMonthInfo(`${t.crossMonthStay}: ${daysInFirstMonth} ${t.daysIn} ${monthNames[entryMonth]} ${t.and} ${daysInSecondMonth} ${t.daysIn} ${monthNames[exitMonth]}`);
       } else {
         setCrossMonthInfo('');
       }
@@ -153,7 +156,7 @@ export function NightlyStayForm({ onSubmit, onCancel, config, onComplete }: Nigh
           )}
           <div className="flex items-center gap-2">
             <BedDouble className="w-5 h-5 text-blue-600" />
-            <h2 className="text-xl font-semibold">New Nightly Stay</h2>
+            <h2 className="text-xl font-semibold">{t.newNightlyStay}</h2>
           </div>
         </div>
         <button
@@ -161,13 +164,13 @@ export function NightlyStayForm({ onSubmit, onCancel, config, onComplete }: Nigh
           className="flex items-center gap-2 bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 transition-colors"
         >
           <X className="w-5 h-5" />
-          Cancel
+          {t.cancel}
         </button>
       </div>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Entry Date</label>
+            <label className="block text-sm font-medium text-gray-700">{t.entryDate}</label>
             <input
               type="date"
               name="entryDate"
@@ -179,7 +182,7 @@ export function NightlyStayForm({ onSubmit, onCancel, config, onComplete }: Nigh
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Number of Nights</label>
+            <label className="block text-sm font-medium text-gray-700">{t.numberOfNights}</label>
             <input
               type="number"
               name="numNights"
@@ -191,7 +194,7 @@ export function NightlyStayForm({ onSubmit, onCancel, config, onComplete }: Nigh
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Exit Date</label>
+            <label className="block text-sm font-medium text-gray-700">{t.exitDate}</label>
             <input
               type="date"
               value={exitDate}
@@ -207,7 +210,7 @@ export function NightlyStayForm({ onSubmit, onCancel, config, onComplete }: Nigh
         )}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">First Name</label>
+            <label className="block text-sm font-medium text-gray-700">{t.firstName}</label>
             <input
               type="text"
               name="firstName"
@@ -216,7 +219,7 @@ export function NightlyStayForm({ onSubmit, onCancel, config, onComplete }: Nigh
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Last Name</label>
+            <label className="block text-sm font-medium text-gray-700">{t.lastName}</label>
             <input
               type="text"
               name="lastName"
@@ -227,7 +230,7 @@ export function NightlyStayForm({ onSubmit, onCancel, config, onComplete }: Nigh
         </div>
         <div className="grid grid-cols-4 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Number of Guests</label>
+            <label className="block text-sm font-medium text-gray-700">{t.numberOfGuests}</label>
             <input
               type="number"
               name="numGuests"
@@ -237,7 +240,7 @@ export function NightlyStayForm({ onSubmit, onCancel, config, onComplete }: Nigh
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Number of Minors</label>
+            <label className="block text-sm font-medium text-gray-700">{t.numberOfMinors}</label>
             <input
               type="number"
               name="numMinors"
@@ -247,7 +250,7 @@ export function NightlyStayForm({ onSubmit, onCancel, config, onComplete }: Nigh
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Daily Tax (€)</label>
+            <label className="block text-sm font-medium text-gray-700">{t.dailyTax}</label>
             <input
               type="number"
               name="dailyTax"
@@ -260,23 +263,23 @@ export function NightlyStayForm({ onSubmit, onCancel, config, onComplete }: Nigh
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-green-700">Pre-Stay Notes</label>
+            <label className="block text-sm font-medium text-green-700">{t.preStayNotes}</label>
             <textarea
               name="preStayNotes"
               maxLength={1000}
               rows={4}
               className="mt-1 block w-full rounded-md border-2 border-gray-400 bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2 resize-vertical"
-              placeholder="Enter any notes before the stay..."
+              placeholder={t.enterNotesBeforeStay}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-blue-700">Post-Stay Notes</label>
+            <label className="block text-sm font-medium text-blue-700">{t.postStayNotes}</label>
             <textarea
               name="postStayNotes"
               maxLength={1000}
               rows={4}
               className="mt-1 block w-full rounded-md border-2 border-gray-400 bg-white shadow-sm focus:border-blue-500 focus:ring-blue-500 px-3 py-2 resize-vertical"
-              placeholder="Enter any notes after the stay..."
+              placeholder={t.enterNotesAfterStay}
             />
           </div>
         </div>
@@ -284,7 +287,7 @@ export function NightlyStayForm({ onSubmit, onCancel, config, onComplete }: Nigh
           type="submit"
           className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
         >
-          Add Stay
+          {t.addStay}
         </button>
       </form>
     </div>

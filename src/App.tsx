@@ -11,12 +11,14 @@ import { NightlyStay } from './types';
 import { useStays } from './hooks/useStays';
 import { useConfig } from './hooks/useConfig';
 import { useAuth } from './hooks/useAuth';
+import { useLanguage } from './hooks/useLanguage';
 import { LoadingSpinner } from './components/LoadingSpinner';
 
 function App() {
   const { user, loading: authLoading, signOut } = useAuth();
   const { config, loading: configLoading, updateConfig } = useConfig(user);
   const { stays, loading: staysLoading, addStay, updateStay, deleteStay } = useStays(user);
+  const { language, t, changeLanguage } = useLanguage();
   const [showNewStay, setShowNewStay] = useState(false);
   const [showConfig, setShowConfig] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
@@ -25,6 +27,10 @@ function App() {
   const handleConfigUpdate = async (newConfig: typeof config) => {
     try {
       await updateConfig(newConfig);
+      // Update language if it changed
+      if (newConfig.language !== language) {
+        changeLanguage(newConfig.language as 'it' | 'en');
+      }
     } catch (error) {
       console.error('Failed to update config:', error);
     }
@@ -75,7 +81,7 @@ function App() {
   }
 
   if (!user) {
-    return <AuthForm onAuthSuccess={handleAuthSuccess} />;
+    return <AuthForm onAuthSuccess={handleAuthSuccess} t={t} />;
   }
 
   if (configLoading || staysLoading) {
@@ -89,6 +95,9 @@ function App() {
           <Header
             config={config}
             userEmail={user.email || ''}
+            language={language}
+            t={t}
+            onLanguageChange={changeLanguage}
             onSettingsClick={() => setShowConfig(true)}
             onSignOut={signOut}
           />
@@ -99,11 +108,13 @@ function App() {
               onCancel={() => setShowNewStay(false)}
               onComplete={handleStaySubmitComplete}
               config={config}
+              t={t}
             />
           ) : selectedMonth ? (
             <MonthlyView
               month={selectedMonth}
               stays={stays}
+              t={t}
               onBack={() => setSelectedMonth(null)}
               onEditStay={setEditingStay}
               onNewStay={() => setShowNewStay(true)}
@@ -112,6 +123,7 @@ function App() {
           ) : (
             <Summary 
               stays={stays} 
+              t={t}
               onNewStay={() => setShowNewStay(true)} 
               onMonthSelect={setSelectedMonth}
             />
@@ -121,6 +133,7 @@ function App() {
             isOpen={showConfig}
             onClose={() => setShowConfig(false)}
             config={config}
+            t={t}
             onConfigUpdate={handleConfigUpdate}
           />
 
@@ -130,12 +143,13 @@ function App() {
               onClose={() => setEditingStay(null)}
               stay={editingStay}
               config={config}
+              t={t}
               onUpdate={handleStayUpdate}
             />
           )}
         </div>
       </div>
-      <Footer />
+      <Footer t={t} />
     </div>
   );
 }

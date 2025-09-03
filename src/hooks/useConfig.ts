@@ -10,6 +10,7 @@ export function useConfig(user: User | null) {
     month: new Date().getMonth() + 1,
     defaultDailyTax: 2.0,
     logoUrl: '',
+    language: 'it',
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -44,6 +45,7 @@ export function useConfig(user: User | null) {
         month: data.month,
         defaultDailyTax: data.default_daily_tax,
         logoUrl: data.logo_url || '',
+        language: data.language || 'it',
       });
       setError(null);
     } catch (err) {
@@ -66,6 +68,7 @@ export function useConfig(user: User | null) {
         month: new Date().getMonth() + 1,
         default_daily_tax: 2.0,
         logo_url: '',
+        language: 'it',
       };
 
       const { data, error } = await supabase
@@ -82,6 +85,7 @@ export function useConfig(user: User | null) {
         month: data.month,
         defaultDailyTax: data.default_daily_tax,
         logoUrl: data.logo_url || '',
+        language: data.language || 'it',
       });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create default config');
@@ -113,6 +117,7 @@ export function useConfig(user: User | null) {
           month: newConfig.month,
           default_daily_tax: newConfig.defaultDailyTax,
           logo_url: newConfig.logoUrl,
+          language: newConfig.language,
         })
         .eq('id', currentConfig.id)
         .select()
@@ -126,6 +131,7 @@ export function useConfig(user: User | null) {
         month: data.month,
         defaultDailyTax: data.default_daily_tax,
         logoUrl: data.logo_url || '',
+        language: data.language || 'it',
       });
       return newConfig;
     } catch (err) {
